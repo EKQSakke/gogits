@@ -4,10 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/rivo/tview"
 )
@@ -22,7 +20,8 @@ func main() {
 
 	list.SetSelectedFunc(func(index int, _ string, _ string, _ rune) {
 		path, _ := list.GetItemText(index)
-		changeDirectory(path)
+		// Need to run through powershell script to change directoryk
+		fmt.Println(path)
 		app.Stop()
 	})
 
@@ -53,7 +52,6 @@ func listGitFoldersFromFile(filePath string, list *tview.List) {
 		fmt.Printf("Error scanning file: %v\n", err)
 		return
 	}
-	fmt.Printf("Listed %v folders\n", list.GetItemCount())
 }
 
 func listGitFolders(rootPath string, list *tview.List) {
@@ -75,11 +73,3 @@ func listGitFolders(rootPath string, list *tview.List) {
 	}
 }
 
-func changeDirectory(path string) {
-	cmd := exec.Command("cmd", "/c", "start", "cmd", "/k", "cd", "/d", path)
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	err := cmd.Start()
-	if err != nil {
-		fmt.Printf("Error changing directory: %v\n", err)
-	}
-}
