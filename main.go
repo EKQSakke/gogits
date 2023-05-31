@@ -7,13 +7,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 func main() {
 	app := tview.NewApplication()
 	list := tview.NewList().ShowSecondaryText(false)
-	text := tview.NewTextView().SetText("Searching Git folders...")
+	text := tview.NewTextView().SetText("Searching Git folders...").SetTextColor(tcell.Color(32))
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
 		AddItem(text, 1, 1, false).
 		AddItem(list, 0, 1, false)
@@ -25,6 +26,7 @@ func main() {
 		app.Stop()
 	})
 
+	text.SetText("Select folder:").SetTextColor(tcell.Color(10))
 	listGitFoldersFromFile("C:/settings/gitfolders.txt", list)
 
 	if err := app.SetRoot(flex, true).SetFocus(list).Run(); err != nil {
@@ -72,4 +74,3 @@ func listGitFolders(rootPath string, list *tview.List) {
 		fmt.Printf("Error: %v\n", err)
 	}
 }
-
