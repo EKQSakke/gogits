@@ -15,9 +15,10 @@ import (
 func main() {
 	app := tview.NewApplication()
 	list := tview.NewList().ShowSecondaryText(false)
+	text := tview.NewTextView().SetText("Searching Git folders...")
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
-		AddItem(tview.NewTextView().SetText("Searching Git folders..."), 1, 1, false).
-		AddItem(list, 0, 1, true)
+		AddItem(text, 1, 1, false).
+		AddItem(list, 0, 1, false)
 
 	list.SetSelectedFunc(func(index int, _ string, _ string, _ rune) {
 		path, _ := list.GetItemText(index)
@@ -25,11 +26,11 @@ func main() {
 		app.Stop()
 	})
 
+	listGitFoldersFromFile("C:/settings/gitfolders.txt", list)
+
 	if err := app.SetRoot(flex, true).SetFocus(list).Run(); err != nil {
 		panic(err)
 	}
-
-	listGitFoldersFromFile("C:/settings/gitfolders.txt", list)
 }
 
 func listGitFoldersFromFile(filePath string, list *tview.List) {
@@ -52,6 +53,7 @@ func listGitFoldersFromFile(filePath string, list *tview.List) {
 		fmt.Printf("Error scanning file: %v\n", err)
 		return
 	}
+	fmt.Printf("Listed %v folders\n", list.GetItemCount())
 }
 
 func listGitFolders(rootPath string, list *tview.List) {
